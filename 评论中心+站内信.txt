@@ -1,0 +1,24 @@
+评论既可以回复评论，也可以回复问题等等。entityType+entityId
+评论的内容经过敏感词筛选
+添加评论+评论数更新  用事务或者异步更新
+
+消息中心：
+a-b发消息  数据库只有一条消息 ，ab都可以看到
+ a->b  b->a都是一条对话conversation_id   根据它获得所有a-b发的消息
+
+redis:
+连接：端口默认6379
+1. redis-cli.exe
+2. shutdown
+3. exit
+4. redis-server.exe redis.windows.conf
+
+客户端：redis_cli
+注意：由于以上的操作只能实现的是本地访问本地的服务器， 如果Redis 服务器在 远程的服务端，不在本地的时候，这个时候就需要修改配置 redis.conf , 绑定服务器的 IP 地址，这样就能实现 远程连接 Redis 服务器了
+
+初始化时，pool
+
+赞和踩 业务包装在service 数据存储在redis
+用一个util管理redis中的key name
+赞的时候讲userid加入赞的集合 同时从踩得集合删除userid
+喜欢的状态  在喜欢集合：1，不喜欢-1，无状态0；
