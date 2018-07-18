@@ -22,3 +22,6 @@ redis:
 用一个util管理redis中的key name
 赞的时候讲userid加入赞的集合 同时从踩得集合删除userid
 喜欢的状态  在喜欢集合：1，不喜欢-1，无状态0；
+
+git->github
+https://www.cnblogs.com/android-blogs/p/5816833.html
