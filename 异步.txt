@@ -1,0 +1,28 @@
+点赞 同时发个站内信通知，修改成就值   异步化
+队列实现异步化
+
+业务发送事件，eventProducer将事件推入队列，eventConsumer是独立的线程或线程池，推进来各种事件，每个事件有好多人去关注、处理handler。每做完一个事加入队列，关联的事件注册好，一个事件过来，对他感兴趣就去处理。例子：成就值关注点赞，也关注答案是否作为参考答案，成就值作为handler,关注这两个事件，事件进入队列里面，eventConsumer就去找对事件感兴趣的handler,handler处理关注的事件。
+
+单向、优先级队列
+
+EventModel 事件发生的现场
+可以用blockingqueue/redis
+list lpush brpop模拟阻塞队列
+
+EventProducer:将事件发出去，就是将事件保存在队列里面；redis序列化，将事件转成文本，放入redis里
+
+取了好多event出来，要找到谁来处理这些事件，那就需要存在映射关系
+如果又新加了handler，要方便的集成，定义eventhandler接口：两个函数，我现在要处理的event,我关注哪些event,返回list因为一个handler一下关注多个事件，当event发生的时候用doHandle来处理
+
+EventConsumer:将event分发出去，用它将event和handler之间的关系建立起来
+系统一起来就将event和关注事件的handler初始化好；在spring的上下文中找有几个类的定义是实现了handler接口。
+不知道工程中有多少个eventHandler接口的实现类，要把这些都找出来：（handler实现自动注册）
+Map<String, EventHandler> beans = applicationContext.getBeansOfType(EventHandler.class);找出来之后，找到handler对哪些event感兴趣：List<EventType> getSupportEventTypes();将他们关联起来：private Map<EventType, List<EventHandler>> config = new HashMap<EventType, List<EventHandler>>();
+
+开启一个线程一直取队列，每个事件找到对应的handler,每个handler执行
+反射需要默认构造函数获取属性、方法
+
+
+发邮件：用valocity引擎实现邮件的模板
+
+入口过来分发，不同东西处理，处理完回调，把数据返回过去
